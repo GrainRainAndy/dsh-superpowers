@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Superpowers 技能套件",
+    "description": "为会话注入 Superpowers 软件开发技能与 using-superpowers 引导，并映射到 DSH 工具。",
+    "detail": "docs/DETAIL.zh.md"
+  }
+}

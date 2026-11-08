@@ -1,0 +1,51 @@
+{
+  "name": "@local/dsh-superpowers",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Superpowers skills and session bootstrap for DeepSeek Harness (dsh) agents — a profile bundle port of obra/superpowers",
+  "type": "module",
+  "icon": "./icon.svg",
+  "exports": {
+    ".": "./lib/index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "lib/**/*.js",
+    "skills/**/*",
+    "locale/*.json",
+    "icon.svg",
+    "cordis.patch.yml",
+    "README.md",
+    "NOTICE.md",
+    "LICENSE",
+    "LICENSE-superpowers",
+    "docs/**/*"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GrainRainAndy/dsh-superpowers.git"
+  },
+  "homepage": "https://github.com/GrainRainAndy/dsh-superpowers",
+  "bugs": {
+    "url": "https://github.com/GrainRainAndy/dsh-superpowers/issues"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "superpowers",
+    "skills",
+    "agent",
+    "bootstrap"
+  ]
+}
