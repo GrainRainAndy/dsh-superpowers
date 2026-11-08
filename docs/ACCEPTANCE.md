@@ -93,6 +93,18 @@ Observed state after installation (2026-11-08):
   live system-prompt injection in the Desktop profile, not merely a mounted
   bundle.
 
+### Repository migration
+
+After verification the package was moved from the working directory to
+`/Users/grainrain/Developer/GitHub/dsh-superpowers`, committed, and published to
+the private repository `github.com/GrainRainAndy/dsh-superpowers` (`main` =
+release line, `dev` = development line). The profile bundle was then removed and
+re-installed from the new location; the profile dependency now reads
+`link:/Users/grainrain/Developer/GitHub/dsh-superpowers`, the bundle row is
+active again, and the test suite is green at the new location (105/105). The
+install commands above show the current path; the original run used the previous
+working-directory path.
+
 The plugin was installed once and left enabled. Uninstall path (not exercised
 in this run): `plugin_manager action=remove_bundle target=@local/dsh-superpowers`.
 
