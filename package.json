@@ -1,6 +1,6 @@
 {
   "name": "@local/dsh-superpowers",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Superpowers skills and session bootstrap for DeepSeek Harness (dsh) agents — a profile bundle port of obra/superpowers",
   "type": "module",

@@ -74,7 +74,7 @@ You have superpowers.
 以 `ctx.systemPrompt.section({ name: 'superpowers:bootstrap', order: 6000,
 interpolate: false, text })` 注册。`interpolate: false` 是必须的：技能正文包含花括号形态的文本，必须原样送达模型。order 6000 位于一方的流程/工具指导（≤ 5000）之后，deliverable、structured-output、harness-source 等 section（≥ 9000）之前；这个数字是展示顺序选择，不是契约。
 
-section 全局注册（profile 范围），这正是"每个顶层会话、无需逐个开启"成立的原因；子 agent 抑制在文本 provider 内处理（见 §7）。实测组合大小为 13,218 字节，每个顶层会话的每个请求都会付出这个成本。
+section 全局注册（profile 范围），这正是"每个顶层会话、无需逐个开启"成立的原因；子 agent 抑制在文本 provider 内处理（见 §7）。实测组合大小为 13,390 字节，每个顶层会话的每个请求都会付出这个成本。
 
 ## 7. 子 agent 抑制
 
@@ -127,7 +127,7 @@ agent?.session?.header?.delegationDepth > 0 || agent?.options?.subagentDepth > 0
 
 ## 13. 兼容性说明
 
-- 针对 DSH `0.2.2-rc.1` 构建并验证。
+- 针对 DSH `0.2.2-rc.1` 构建并验证；已在 `0.2.2-rc.3` 上复测（105/105 测试通过、实机 row active，并按 rc.2 的具名子代理/中断工具变更更新了工具映射）。
 - 依赖：`ctx.skills.registerProvider`/`skills.list`/`skills.get` 服务契约、`ctx.systemPrompt.section`、delegated 信号（`session.header.delegationDepth`、`AgentOptions.subagentDepth`）、`dsh-app-boot` 的插入行路径锚定。
 - 未来 DSH 若改动 provider 契约或 section 顺序表，集成测试会先失败；测试套件就是预警机制。
 - 跟进新上游版本：用新 commit 的 `skills/` 替换、重新应用两处允许的差异（新树的映射文件、Platform Adaptation 行）、更新 `NOTICE.md` 的固定 commit、重跑对等与目录测试。

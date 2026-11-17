@@ -224,7 +224,7 @@ into behavior-shaping skill text.
 
 ## 13. Compatibility notes
 
-- Built and verified against DSH `0.2.2-rc.1`.
+- Built and verified against DSH `0.2.2-rc.1`; re-verified against `0.2.2-rc.3` (105/105 tests on the rc.3 runtime, live row active, and the tool mapping updated for the rc.2 named-subagent/interrupt changes).
 - Relies on: `ctx.skills.registerProvider`/`skills.list`/`skills.get` service
   contract, `ctx.systemPrompt.section`, delegated-agent signals
   (`session.header.delegationDepth`, `AgentOptions.subagentDepth`), and the

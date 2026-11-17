@@ -85,11 +85,11 @@ Details and contracts: [docs/DETAIL.md](docs/DETAIL.md). The engineering record 
 
 - A DSH profile that mounts the `skills` and `systemPrompt` services (any `@deepseek-ai/dsh-base` composition) and a model-invocable `skill` tool (`@deepseek-ai/dsh-tool-skill`).
 - No package dependencies, no install scripts, no build step. Node builtins only.
-- Tested against DSH `0.2.2-rc.1`.
+- Tested against DSH `0.2.2-rc.3` (re-verified against the rc.3 runtime; `0.2.2-rc.4` has no plugin-affecting break).
 
 ## Limitations
 
-- **Prompt budget.** Per-session cost is a 13,218-byte bootstrap in the system prompt (using-superpowers body 3,042 B + DSH tool mapping 9,889 B + wrapper), plus ~3 KiB of catalog descriptions. Skill bodies load on demand. If that is too much for a deployment, disable the bundle or trim the mapping in the checkout (re-measure with the plugin's own composition).
+- **Prompt budget.** Per-session cost is a 13,390-byte bootstrap in the system prompt (using-superpowers body 3,042 B + DSH tool mapping 10,061 B + wrapper), plus ~3 KiB of catalog descriptions. Skill bodies load on demand. If that is too much for a deployment, disable the bundle or trim the mapping in the checkout (re-measure with the plugin's own composition).
 - **Delegated sessions are excluded by design.** A subagent that needs Superpowers guidance must be told to load the skill explicitly in its dispatch prompt.
 - **Profile-specific tool paths.** The mapping documents tools conditionally: `wait_agent` and Team tools exist only where the profile mounts them; the mapping routes continuable workers through `spawn_teammate` + `send_message` in Agent-Teams profiles instead of plain subagent ids.
 - **No native worktree tool** in the standard tool set; `using-git-worktrees` uses its git fallback through `bash`.

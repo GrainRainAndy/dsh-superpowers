@@ -14,7 +14,7 @@ authoritative; `superpowers:<name>` means the bare name — drop the `superpower
 | Background output / stop (`BashOutput`, `KillShell`) | `job_output`, `job_list`, `job_kill` |
 | Change directory | `working_directory` (`cd`); else pass `workdir` to `bash` |
 | Dispatch a subagent (`Task`/`Agent`, subagent templates) | `subagent` (fresh) / `subagent_fork` (inherits turns) |
-| Message / list / wait / stop subagents (`SendMessage`) | `send_message`, `list_agents`, `wait_agent`, `interrupt_agent`; no close tool |
+| Message / list / wait for subagents (`SendMessage`) | `send_message({agent, message})`, `list_agents`, `wait_agent`; no close or interrupt tool in built-in configs |
 | Ask the user (`AskUserQuestion`) | `ask_user_question` |
 | Present your plan (`ExitPlanMode`) | `exit_plan_mode`, only inside plan mode |
 | Search / fetch the web (`WebSearch`, `WebFetch`) | `web_search`, `web_fetch` |
@@ -32,25 +32,28 @@ because the session cwd is the user's project, not the skill dir — never follo
 
 ## Subagents
 
-- **Fresh dispatch:** `subagent({description, prompt, cwd?, provider?, model?, reasoning_effort?})`
-  starts a clean-context child, returns `started subagent <id>`, and its final answer arrives as a
-  completion notice. Fill the skill's prompt template and pass it as `prompt`. `subagent_fork`
-  inherits completed turns; these skills assume fresh context, so fork only for genuine reuse.
-- **Continuation and fix rounds:** `send_message({target: <id>, message})` steers a running child at
-  its next step or starts an idle one. Record the dispatch id — fix rounds 1-3 resume that agent;
-  otherwise use the skills' fallback: fresh implementer with brief path, report path, and findings.
-- **Lifecycle:** `list_agents` lists direct children (id, label, running/inactive); completion is
-  pushed, so do not poll; no close tool exists. Where the profile provides `wait_agent`, wait in one
-  bounded stretch (`timeout_ms` 300000-600000), then `list_agents` and reconcile — never short-poll.
+- **Fresh dispatch:** `subagent({description, prompt, name?, cwd?, provider?, model?, reasoning_effort?})`
+  starts a clean-context child named `name` when given and `agent-N` otherwise; its final answer
+  arrives as a completion notice. Fill the skill's prompt template and pass it as `prompt`.
+  `subagent_fork` inherits completed turns; these skills assume fresh context, so fork only for
+  genuine reuse.
+- **Continuation and fix rounds:** `send_message({agent: <name>, message})` steers a running child
+  at its next step or starts an idle one; address it by the name the dispatch result or `list_agents`
+  reports. Fix rounds 1-3 resume that agent; otherwise use the skills' fallback: fresh implementer
+  with brief path, report path, and findings.
+- **Lifecycle:** `list_agents` lists the whole subagent tree with each member's name, description,
+  and running/inactive status; completion is pushed, so do not poll. No close tool exists, and
+  built-in configurations provide no interruption tool (since DSH 0.2.2-rc.2 `interrupt_agent` is
+  off by default; a profile can re-enable it). Where `wait_agent` is present, wait in one bounded
+  stretch (`timeout_ms` 300000-600000), then `list_agents` and reconcile — never short-poll.
 - **Parallel dispatch:** several `subagent` calls in one assistant message run concurrently; one per
   message is sequential. Dispatch at most one implementer per shared tree.
 - **Model selection:** when enabled, pass `provider` and `model` together plus explicit
   `reasoning_effort` per the skill's Model Selection; omitted values inherit the parent route,
   often the most expensive. `list_subagent_models` shows the allowed routes; policy rejects the rest.
-- **Agent Teams profiles (this desktop profile):** Team tools shadow `list_agents`/`send_message`/
-  `wait_agent`/`interrupt_agent` and address durable `spawn_teammate` teammates, not plain subagent
-  ids: use `spawn_teammate` + `send_message` when a skill must resume the same worker (fix rounds,
-  re-review); it takes no provider/model, so a fresh implementer is the fallback for model selection.
+- **Named collaboration:** children are named members of one subagent tree, so a skill can resume a
+  worker across fix rounds and re-reviews by name. Profiles with Agent Teams also expose Team task
+  tools (`team_task_*`) that act on the same members without changing dispatch or continuation.
 
 ## Task tracking
 
