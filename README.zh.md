@@ -49,7 +49,7 @@ Web GUI 中同样可以在 **Plugins** 页面按 spec 安装。安装会选中 `
 
 ## 已知限制
 
-- **Prompt 预算**：每个顶层会话有 13,218 字节的引导进入 system prompt（using-superpowers 正文 3,042 B + 工具映射 9,889 B + 包装），另有约 3 KiB 技能目录描述；技能正文按需加载。若部署无法承受，可禁用 bundle 或裁剪 checkout 中的映射。
+- **Prompt 预算**：每个顶层会话有 13,390 字节的引导进入 system prompt（using-superpowers 正文 3,042 B + 工具映射 10,061 B + 包装），另有约 3 KiB 技能目录描述；技能正文按需加载。若部署无法承受，可禁用 bundle 或裁剪 checkout 中的映射。
 - **子 agent 按设计不注入**：需要 Superpowers 指导的 worker 要在 dispatch prompt 中显式要求加载技能。
 - **profile 相关工具**：`wait_agent` 与 Agent Teams 工具仅在挂载它们的 profile 存在；Agent Teams profile 中 Team 工具会遮蔽基础 subagent 控制工具，映射因此给出可续聊 worker 的替代路径。
 - 标准工具集**没有原生 worktree 工具**，`using-git-worktrees` 走 git 回退。
@@ -67,6 +67,10 @@ node --test tests/
 ```
 
 集成与对等套件需要 `DSH_RUNTIME_ROOT`（解包的 DSH runtime）与 `SUPERPOWERS_REF_ROOT`（固定 commit 的 `obra/superpowers` checkout）；缺失时套件会带说明跳过。
+
+## 兼容性
+
+已针对 DSH `0.2.2-rc.3` 复测：105/105 测试通过，实机插件 row 保持 active，system prompt 正常注入。`0.2.2-rc.4` 的唯一破坏性变更是 LLM 内容拒绝错误码 `CONTENT_REFUSED`，与本插件无关；尚未在 rc.4 实机上验证。
 
 ## 归属与许可
 

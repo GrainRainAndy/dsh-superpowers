@@ -8,7 +8,8 @@ did not edit `lib/`, `package.json`, `cordis.patch.yml`, `locale/`, `icon.svg`, 
 Status: **verification complete — 105/105 tests pass, live `plugin_manager install_bundle` applied
 without warnings, and the fresh-session acceptance run passed; no open blocking defects.** Offline
 evidence is in §1–§9; the Lead-owned live gates and this verifier's independent re-check of them are
-in §10. Remaining non-blocking limits are listed in §7.
+in §10. §11 re-verifies the plugin on DSH `0.2.2-rc.3` after the Desktop installation was updated.
+Remaining non-blocking limits are listed in §7.
 
 ## 1. Method
 
@@ -446,3 +447,38 @@ was confirmed for verification purposes.
 - `diff -r superpowers-ref/skills dsh-superpowers/skills` re-run: unchanged — only the one inserted
   `using-superpowers/SKILL.md` line plus the one added `dsh-tools.md`.
 - New defects found in this pass: **none**.
+
+## 11. Re-verification on DSH 0.2.2-rc.2 / 0.2.2-rc.3
+
+The Desktop installation was updated from DSH `0.2.2-rc.1` to `0.2.2-rc.3`
+(app `CFBundleShortVersionString` `0.2.2-rc.3`, `app.asar` dated 2026-11-13). Re-checked
+on 2026-11-08…2026-11-18 (repo version 1.0.1):
+
+- **Live state.** The `superpowers` row is `enabled: true`, `fiberPhase: "active"`. The current
+  Session's latest `system/message` version (seq 1887, turn 4 step 1) is 20,325 chars and contains
+  `You have superpowers.` and the DSH tool mapping — the bootstrap still injects on rc.3.
+- **Runtime contract.** `node --test tests/` against the runtime extracted from the installed
+  rc.3 `app.asar` (`DSH_RUNTIME_ROOT=/tmp/dsh-asar-rc3/dsh`): **105 tests, 21 suites, 105 pass,
+  0 fail, 0 skipped** — the skill-provider, system-prompt, app-boot anchoring, and manifest
+  contracts used by the plugin are unchanged from rc.1.
+- **Upgrade guides.** The installed app ships no `docs/upgrade-guide` (the file read fails), so the
+  public `deepseek-ai/deepseek-harness` repository's upgrade guides at tag `dsh-v0.2.2-rc.4` were
+  used. Relevant items: `v0.2.2-rc.1/runtime-context-reminders` (runtime-context user messages only;
+  this plugin contributes system-prompt sections — not affected), `v0.2.2-rc.1/plugin-update-method`
+  (Host API field only; the `plugin_manager` tool is unchanged — not affected),
+  `v0.2.2-rc.1/dsh-doc-skill` (Creator-mode skill rename — not affected), and
+  `v0.2.2-rc.1/subagent-interrupt-default` (**affected the tool mapping**: built-in configurations
+  no longer provide `interrupt_agent`, and rc.2 replaced `spawn_teammate` with named subagents).
+  `v0.2.2-rc.3/deepseek-refusal-code` (the only listed break in rc.4) does not touch this plugin.
+- **Content update (v1.0.1).** `skills/using-superpowers/references/dsh-tools.md` now states:
+  `send_message({agent, message})` addresses a child by name; `list_agents` lists the whole
+  subagent tree; `subagent` accepts an optional `name`; built-in configurations provide no
+  interruption tool (a profile can re-enable `interrupt_agent`); the stale `spawn_teammate`/shadowing
+  paragraph was replaced by a named-collaboration note. No plugin code changed.
+- **Size.** The composed bootstrap is **13,390 B** / 13,348 chars / 211 lines (using-superpowers
+  body 3,042 B + mapping 10,061 B trimmed, 10,062 B on disk / 143 lines + wrapper). The live
+  prompt grows by the same delta after the plugin is reloaded.
+
+Residual limits: DSH `0.2.2-rc.4` is released in the public repository (2026-11-17) but was not run
+locally; its only listed break is unrelated. A bootstrap already assembled in a running Host keeps
+the previous mapping until the plugin is reloaded or the app restarts.

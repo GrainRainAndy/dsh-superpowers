@@ -41,7 +41,7 @@ dsh-superpowers/
 ```json
 {
   "name": "@local/dsh-superpowers",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "icon": "./icon.svg",

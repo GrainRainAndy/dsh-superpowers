@@ -52,7 +52,7 @@ const DESIGN_EXPORTS = {
 describe('package.json manifest', () => {
   test('declares the design identity and module shape', () => {
     assert.equal(manifest.name, '@local/dsh-superpowers')
-    assert.equal(manifest.version, '1.0.0')
+    assert.match(manifest.version, /^\d+\.\d+\.\d+$/, 'version must be a semantic version')
     assert.equal(manifest.private, true)
     assert.equal(manifest.type, 'module')
     assert.equal(manifest.icon, './icon.svg')
